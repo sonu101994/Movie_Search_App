@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import Card from "../components/Card";
-import { topMoviesApiURL, searchMoviesApiURL } from "../services/api";
+import { searchMoviesApiURL, topMoviesApiURL } from "../services/api";
 
 export default function Home() {
 
@@ -74,17 +74,17 @@ export default function Home() {
           {/* Header: shows context (search or popular) + controls */}
           <div className="d-flex justify-content-between align-items-center mb-3">
 
-            <h5 className="bg-warning px-2 py-1 rounded">
+            <h5 className="bg-warning px-2 py-1 rounded d-none d-sm-block">
               {headingText}
             </h5>
 
             {/* Show page info in browsing mode, back button in search mode */}
             {!search ? (
-              <span className="badge bg-secondary">
+              <span className="badge bg-secondary ">
                 Page - {page}
               </span>
             ) : (
-              <button className="btn btn-sm btn-dark" onClick={handleBack}>
+              <button className="btn btn-sm btn-dark" onClick={handleBack} >
                 ← Back
               </button>
             )}
