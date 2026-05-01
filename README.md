@@ -64,11 +64,11 @@ Users can explore movies, view details, watch trailers, and manage favorites.
 
 ## 🌐 Live Demo
 
-👉 https://your-project.vercel.app  
+👉 https://movie-search-app-flax-five.vercel.app/
 
 ---
-
-## 🎯 Purpose
+## GitHub Repo:
+https://github.com/sonu101994/Movie_Search_App
 
 ## 🎯 Purpose
 
@@ -86,4 +86,4 @@ Focused on clean UI and user experience.
 ## 👨‍💻 Made By
 
 **Bhawani Singh**  
-GitHub: 
+GitHub: https://github.com/sonu101994/
