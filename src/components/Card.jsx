@@ -17,7 +17,7 @@ export default function Card({ movies, favorites, toggleFavorite }) {
         const isFav = favorites.some(f => f.id === movie.id);
 
         return (
-          <div className="col-md-4 col-lg-3" key={movie.id}>
+          <div className=" col-sm-6 col-md-4 col-lg-3" key={movie.id}>
 
             {/* Clickable card container - navigates to movie detail on click */}
             <div
