@@ -5,23 +5,23 @@ import { trendingMoviesUrl } from "../services/api";
 
 export default function Trending() {
 
-  // Access shared state from parent layout (React Router Outlet Context)
+//  extracting functions from context
   // favorites → list of saved movies
   // toggleFavorite → function to add/remove from favorites
   const { favorites, toggleFavorite } = useOutletContext();
 
-  // Local state to store fetched trending movies
+  // creating state to store fetched trending movies
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
     fetch(trendingMoviesUrl)
       .then(res => res.json())
       .then(data => {
-        // Safely update state with results (fallback to empty array if undefined)
+        // storing result in movies state if fallback empty array will be stored
         setMovies(data.results || []);
       })
       .catch(err => {
-        // Basic error handling (can be improved with UI feedback)
+      
         console.error("Error fetching trending movies:", err);
       });
 
@@ -33,14 +33,7 @@ export default function Trending() {
 
       {/* Grid layout for movie cards */}
       <div className="row g-4">
-
-        {/* 
-          Card component is responsible for rendering movie UI.
-          Passing:
-          - movies → list of trending movies
-          - favorites → current favorite movies
-          - toggleFavorite → handler for adding/removing favorites
-        */}
+        {/* card component for render in UI */}
         <Card
           movies={movies}
           favorites={favorites}

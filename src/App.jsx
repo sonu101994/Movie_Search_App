@@ -29,8 +29,10 @@ export default function App() {
 
     if (exists) {
       setFavorites(favorites.filter(f => f.id !== movie.id));
+         toast.success("Favorites removed!");
     } else {
       setFavorites([...favorites, movie]);
+         toast.success("Favorites Added!");
     }
   }
 

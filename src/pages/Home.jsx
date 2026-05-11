@@ -105,14 +105,14 @@ export default function Home() {
             <div className="d-flex justify-content-center gap-3 mt-4">
 
               <button
-                className="btn btn-outline-secondary"
+                className="btn btn-outline-warning"
                 onClick={() => setPage(p => Math.max(p - 1, 1))} // Prevent page < 1
               >
                 ⬅ Prev
               </button>
 
               <button
-                className="btn btn-outline-secondary"
+                className="btn btn-outline-warning"
                 onClick={() => setPage(p => p + 1)}
               >
                 Next ➡

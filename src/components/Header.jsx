@@ -40,10 +40,10 @@ export default function Header({
                     </h4>
 
                     {/* Navigation */}
-                    <nav className="d-flex gap-4">
-                        {navLinks.map(({ path, label }) => (
+                    <nav className="d-flex  flex-grow-1 justify-content-center justify-content-md-end gap-4">
+                        {navLinks.map(({ path, label,index }) => (
                             <Link
-                                key={path}
+                                key={index}
                                 to={path}
                                 className={`text-decoration-none fw-medium transition ${
                                     pathname === path
@@ -61,7 +61,7 @@ export default function Header({
                 {!hideSearch && (
                     <div className="row g-2 mt-2 align-items-center">
 
-                        <div className="col-12 col-md-10">
+                        <div className="col-12 col-sm-10">
                             <Input
                                 value={search}
                                 setValue={setSearch}
@@ -70,7 +70,7 @@ export default function Header({
                             />
                         </div>
 
-                        <div className="col-12 col-md-2">
+                        <div className="col-12 col-sm-2">
                             <button
                                 className="btn btn-warning w-100 fw-semibold"
                                 onClick={onSearch}

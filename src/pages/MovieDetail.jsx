@@ -21,13 +21,15 @@ export default function MovieDetail() {
     // Fetch movie details
     fetch(movieDetailApiURL(id))
       .then(res => res.json())
+      // data received from api stored in movie state
       .then(data => setMovie(data));
+
 
     // Fetch related videos (trailers, teasers, etc.)
     fetch(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=04c35731a5ee918f014970082a0088b1`)
       .then(res => res.json())
       .then(data => {
-        // Prefer official YouTube trailer; fallback to any YouTube video
+        //  official YouTube trailer and in case fallback to any YouTube video
         const video =
           data.results?.find(v => v.type === "Trailer" && v.site === "YouTube") ||
           data.results?.find(v => v.site === "YouTube");
@@ -57,7 +59,7 @@ export default function MovieDetail() {
 
       <div className="container">
 
-        {/* Navigate back to previous page (history stack) */}
+        {/* Navigate back to previous page  */}
         <button
           className="btn btn-outline-light mb-3"
           onClick={() => navigate(-1)}
@@ -101,7 +103,6 @@ export default function MovieDetail() {
             {/* Rating */}
             <p className="text-warning">⭐ {movie.vote_average} / 10</p>
 
-            {/* Basic metadata */}
             <p>
               📅 {movie.release_date} | 🎬 {movie.original_language?.toUpperCase()}
             </p>
@@ -133,7 +134,7 @@ export default function MovieDetail() {
               </span>
             </div>
 
-            <h4>🎬 Trailer</h4>
+            <h4 className="pb-2">🎬 Trailer</h4>
 
             {/* Embed YouTube trailer if available */}
             {trailer ? (
