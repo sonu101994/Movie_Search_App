@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import { FaImage } from "react-icons/fa";
+import { FaHeart, FaImage, FaRegHeart } from "react-icons/fa";
 
 // Card component displays a grid of movie cards with details and favorite functionality
 export default function Card({ movies, favorites, toggleFavorite }) {
@@ -17,7 +17,7 @@ export default function Card({ movies, favorites, toggleFavorite }) {
         const isFav = favorites.some(f => f.id === movie.id);
 
         return (
-          <div className=" col-sm-6 col-md-4 col-lg-3" key={movie.id}>
+          <div className="col-sm-6 col-md-4 col-lg-3" key={movie.id}>
 
             {/* Clickable card container - navigates to movie detail on click */}
             <div
@@ -35,16 +35,16 @@ export default function Card({ movies, favorites, toggleFavorite }) {
                   alt={movie.title}
                 />
               ) : (
-               <div
-                className="w-100 rounded shadow d-flex justify-content-center align-items-center flex-column"
-                style={{
-                  aspectRatio: "2 / 3",
-                  backgroundColor: "#2c2c2c"
-                }}
-              >
+                <div
+                  className="w-100 rounded shadow d-flex justify-content-center align-items-center flex-column"
+                  style={{
+                    aspectRatio: "2 / 3",
+                    backgroundColor: "#2c2c2c"
+                  }}
+                >
                   <p className="fs-3 text-white">Image Not Found</p>
-                <FaImage size={80} color="#999" />
-              </div>
+                  <FaImage size={80} color="#999" />
+                </div>
               )}
 
               {/* Card body with movie info and action button */}
@@ -54,7 +54,7 @@ export default function Card({ movies, favorites, toggleFavorite }) {
                 <h5>{movie.title}</h5>
 
                 {/* Rating and favorite button section */}
-                <div className="mt-auto d-flex justify-content-between">
+                <div className="mt-auto d-flex justify-content-between align-items-center">
 
                   {/* Movie rating display */}
                   <span>{movie.vote_average}/10</span>
@@ -66,8 +66,9 @@ export default function Card({ movies, favorites, toggleFavorite }) {
                       e.stopPropagation();
                       toggleFavorite(movie);
                     }}
+                    aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
                   >
-                    ❤️
+                    {isFav ? <FaHeart /> : <FaRegHeart />}
                   </button>
 
                 </div>

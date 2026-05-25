@@ -31,3 +31,10 @@ export const movieDetailApiURL = (id) =>
  */
 export const trendingMoviesUrl =
   `${BASE_URL}/trending/movie/day?api_key=${API_KEY}`;
+
+/**
+ * fetch related videos for a specific movie
+ * @param {number} id - movie ID
+ */
+export const movieVideosApiURL = (id) =>
+  `${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`;

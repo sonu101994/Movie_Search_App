@@ -14,8 +14,12 @@ export default function App() {
 
   // Manage the list of favorite movies and initialize from localStorage.
   const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem("fav");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem("fav");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
   // Persist favorites to localStorage whenever the list changes.
@@ -25,15 +29,17 @@ export default function App() {
 
   // Toggle a movie in the favorites list: add it if missing, remove it if present.
   function toggleFavorite(movie) {
-    const exists = favorites.find(f => f.id === movie.id);
+    setFavorites(currentFavorites => {
+      const exists = currentFavorites.find(f => f.id === movie.id);
 
-    if (exists) {
-      setFavorites(favorites.filter(f => f.id !== movie.id));
-         toast.success("Favorites removed!");
-    } else {
-      setFavorites([...favorites, movie]);
-         toast.success("Favorites Added!");
-    }
+      if (exists) {
+        toast.success("Favorites removed!");
+        return currentFavorites.filter(f => f.id !== movie.id);
+      }
+
+      toast.success("Favorites Added!");
+      return [...currentFavorites, movie];
+    });
   }
 
   // Clear all favorites and remove the saved data from localStorage.
@@ -45,7 +51,6 @@ export default function App() {
           <button
             onClick={() => {
               setFavorites([]);
-              localStorage.removeItem("fav");
               toast.success("Favorites cleared!");
               closeToast();
             }}

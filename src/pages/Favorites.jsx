@@ -1,4 +1,5 @@
 import { Link, useOutletContext } from "react-router-dom";
+import { FaHeart, FaRegHeart, FaTrash } from "react-icons/fa";
 import Card from "../components/Card";
 
 export default function Favorites({ clearFavorites }) {
@@ -13,10 +14,11 @@ export default function Favorites({ clearFavorites }) {
             {favorites.length > 0 && (
                 <div className="d-flex justify-content-end mb-3">
                     <button
-                        className="btn btn-danger"
+                        className="btn btn-danger d-flex align-items-center gap-2"
                         onClick={clearFavorites} // Clears entire favorites list
                     >
-                        Clear All
+                        <FaTrash />
+                        <span>Clear All</span>
                     </button>
                 </div>
             )}
@@ -25,19 +27,20 @@ export default function Favorites({ clearFavorites }) {
 
                 // Empty state UI when no favorites are added
                 <div>
-                    <div className="alert alert-info text-center">
-                        No favorites yet ❤️
+                    <div className="alert alert-info text-center d-flex align-items-center justify-content-center gap-2">
+                        <span>No favorites yet</span>
+                        <FaRegHeart />
                     </div>
 
                     {/* Navigation back to home to add favorites */}
-                    <button className="btn btn-outline-warning border-2 d-block mx-auto fs-5">
-                        <Link
-                            to="/"
-                            className="text-decoration-none text-dark"
-                        >
-                            Add Favorites ❤️
-                        </Link>
-                    </button>
+                    <Link
+                        to="/"
+                        className="btn btn-outline-warning border-2 d-flex align-items-center justify-content-center gap-2 mx-auto fs-5 text-dark text-decoration-none"
+                        style={{ maxWidth: "220px" }}
+                    >
+                        <span>Add Favorites</span>
+                        <FaHeart />
+                    </Link>
                 </div>
 
             ) : (

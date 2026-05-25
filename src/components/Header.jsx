@@ -1,15 +1,27 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { FaFilm, FaFire, FaHeart, FaHome, FaSearch } from "react-icons/fa";
 import Input from "./Input";
-import { useMemo } from "react";
 
 // Header component for the movie search app, handling navigation and search functionality
 export default function Header({
     search,
     setSearch,
     onSearch,
-    heading ,
+    heading,
 }) {
     const { pathname } = useLocation();
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 767px)");
+        const updateMobileState = () => setIsMobile(mediaQuery.matches);
+
+        updateMobileState();
+        mediaQuery.addEventListener("change", updateMobileState);
+
+        return () => mediaQuery.removeEventListener("change", updateMobileState);
+    }, []);
 
     // Memoized route checks to avoid recalculating on every render
     const hideSearch = useMemo(
@@ -19,64 +31,82 @@ export default function Header({
 
     // Navigation links configuration
     const navLinks = [
-        { path: "/", label: "Home" },
-        { path: "/trending", label: "Trending" },
-        { path: "/favorites", label: "Favorites" },
+        { path: "/", label: "Home", icon: <FaHome /> },
+        { path: "/trending", label: "Trending", icon: <FaFire /> },
+        { path: "/favorites", label: "Favorites", icon: <FaHeart /> },
     ];
+
+    function handleInputChange(value) {
+        setSearch(value);
+
+        if (isMobile || value.trim() === "") {
+            onSearch(value);
+        }
+    }
 
     return (
         <header
-            className="position-sticky top-0 bg-white shadow-sm"
+            className="position-sticky top-0 bg-white border-bottom shadow-sm"
             style={{ zIndex: 1000 }}
         >
-            <div className="container-fluid px-4 py-2">
+            <div className="container-fluid container-lg px-3 px-sm-4 py-2 py-md-3">
 
                 {/* Top Section with heading and navigation */}
-                <div className={`d-flex justify-content-between align-items-center ${hideSearch ? "py-2" : ""}`}>
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
 
                     {/* Logo / Heading */}
-                    <h4 className="text-warning m-0 d-none d-md-block fw-bold">
-                        {heading}
-                    </h4>
+                    <Link
+                        to="/"
+                        className="text-warning text-decoration-none d-flex align-items-center gap-2 fw-bold fs-4 text-center text-md-start"
+                    >
+                        <FaFilm />
+                        <span>{heading}</span>
+                    </Link>
 
                     {/* Navigation */}
-                    <nav className="d-flex  flex-grow-1 justify-content-center justify-content-md-end gap-4">
-                        {navLinks.map(({ path, label,index }) => (
-                            <Link
-                                key={index}
-                                to={path}
-                                className={`text-decoration-none fw-medium transition ${
-                                    pathname === path
-                                        ? "text-warning border-bottom border-warning"
-                                        : "text-dark"
-                                }`}
-                            >
-                                {label}
-                            </Link>
-                        ))}
+                    <nav className="d-flex flex-wrap justify-content-center justify-content-md-end gap-2 gap-sm-3">
+                        {navLinks.map(({ path, label, icon }) => {
+                            const isActive = pathname === path;
+
+                            return (
+                                <Link
+                                    key={path}
+                                    to={path}
+                                    className={`text-decoration-none fw-semibold d-flex align-items-center gap-2 px-3 py-2 rounded-pill ${
+                                        isActive
+                                            ? "bg-warning text-dark shadow-sm"
+                                            : "text-dark bg-light border"
+                                    }`}
+                                >
+                                    {icon}
+                                    <span>{label}</span>
+                                </Link>
+                            );
+                        })}
                     </nav>
                 </div>
 
                 {/* Search Section - only shown on home page */}
                 {!hideSearch && (
-                    <div className="row g-2 mt-2 align-items-center">
+                    <div className="row g-2 mt-3 align-items-center justify-content-center">
 
-                        <div className="col-12 col-sm-10">
+                        <div className="col-12 col-md-9 col-lg-10">
                             <Input
                                 value={search}
-                                setValue={setSearch}
-                                onSearch={onSearch}
-                                placeholder="Search movies..."
+                                setValue={handleInputChange}
+                                onSearch={() => onSearch()}
+                                placeholder={isMobile ? "Type to search movies..." : "Search movies..."}
                             />
                         </div>
 
-                        <div className="col-12 col-sm-2">
+                        <div className="d-none d-md-block col-md-3 col-lg-2">
                             <button
-                                className="btn btn-warning w-100 fw-semibold"
+                                className="btn btn-warning w-100 fw-semibold d-flex align-items-center justify-content-center gap-2"
                                 onClick={onSearch}
                                 aria-label="Search movies"
                             >
-                                Search
+                                <FaSearch />
+                                <span>Search</span>
                             </button>
                         </div>
 

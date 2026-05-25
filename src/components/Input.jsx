@@ -1,4 +1,4 @@
-export default function Input({ value, setValue, onSearch }) {
+export default function Input({ value, setValue, onSearch, placeholder = "Search movies..." }) {
 
   return (
     <input
@@ -7,7 +7,8 @@ export default function Input({ value, setValue, onSearch }) {
       onChange={(e) => setValue(e.target.value)} // Sync input changes with parent state
       onKeyDown={(e) => e.key === "Enter" && onSearch()} // Trigger search on Enter key press
       className="w-100 p-2 border rounded-3"
-      placeholder="Search movies..." 
+      placeholder={placeholder}
+      aria-label={placeholder}
     />
   );
 }

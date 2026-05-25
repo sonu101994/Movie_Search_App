@@ -8,6 +8,7 @@ export default function Layout({ favorites, toggleFavorite }) {
   const location = useLocation();
 
   // Shared state for search and pagination across pages
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
@@ -15,16 +16,27 @@ export default function Layout({ favorites, toggleFavorite }) {
   const hideHeader = location.pathname.startsWith("/movie");
 
   // Dynamic heading based on current route
-  let heading = "🎬 Movie Parlour";
+  let heading = "Movie Parlour";
 
-  if (location.pathname === "/trending") heading = "🔥 Trending Movies";
-  if (location.pathname === "/favorites") heading = "❤️ Favorite Movies";
+  if (location.pathname === "/trending") heading = "Trending Movies";
+  if (location.pathname === "/favorites") heading = "Favorite Movies";
 
-  function handleSearch() {
+  function handleSearch(query = searchInput) {
+    setSearch(query.trim());
     setPage(1); // Reset pagination when a new search is triggered
   }
 
+  function handleSearchInputChange(value) {
+    setSearchInput(value);
+
+    if (value.trim() === "") {
+      setSearch("");
+      setPage(1); // reset to popular movies page 1 when search is cleared
+    }
+  }
+
   function clearSearch() {
+    setSearchInput("");
     setSearch("");
     setPage(1); // Ensure UI resets to initial state
   }
@@ -36,8 +48,8 @@ export default function Layout({ favorites, toggleFavorite }) {
       {!hideHeader && (
         <Header
           heading={heading}
-          search={search}
-          setSearch={setSearch}
+          search={searchInput}
+          setSearch={handleSearchInputChange}
           onSearch={handleSearch}
         />
       )}
@@ -53,6 +65,8 @@ export default function Layout({ favorites, toggleFavorite }) {
           toggleFavorite,
           search,
           setSearch,
+          searchInput,
+          setSearchInput,
           page,
           setPage,
           clearSearch

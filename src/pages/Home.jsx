@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Card from "../components/Card";
 import { searchMoviesApiURL, topMoviesApiURL } from "../services/api";
 
@@ -12,37 +13,42 @@ export default function Home() {
     search,
     page,
     setPage,
-    setSearch
+    clearSearch
   } = useOutletContext();
 
   // Local state for API data and loading indicator
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch movies based on current search or page
-  async function getMovies() {
-    setLoading(true);
-
-    // Decide endpoint: search vs popular movies
-    const url = search
-      ? searchMoviesApiURL(search)
-      : topMoviesApiURL(page);
-
-    const res = await fetch(url);
-    const data = await res.json();
-
-    // Ensure safe fallback if API returns undefined
-    setMovies(data.results || []);
-    setLoading(false);
-  }
-
   // Re-fetch data whenever search query or page changes
   useEffect(() => {
+    async function getMovies() {
+      setLoading(true);
+
+      try {
+        // Decide endpoint: search vs popular movies
+        const url = search
+          ? searchMoviesApiURL(search)
+          : topMoviesApiURL(page);
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        // Ensure safe fallback if API returns undefined
+        setMovies(data.results || []);
+      } catch (err) {
+        console.error("Error fetching movies:", err);
+        setMovies([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     getMovies();
   }, [search, page]);
 
   function handleBack() {
-    setSearch(""); // Reset search → switches UI back to popular movies
+    clearSearch(); // Reset search → switches UI back to popular movies
   }
 
   // Dynamic heading based on current state
@@ -63,7 +69,7 @@ export default function Home() {
       {/* Empty state when no results are returned */}
       {!loading && movies.length === 0 && (
         <div className="alert alert-info text-center">
-          No movies found 😢
+          No movies found
         </div>
       )}
 
@@ -72,9 +78,9 @@ export default function Home() {
         <>
           
           {/* Header: shows context (search or popular) + controls */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
 
-            <h5 className="bg-warning px-2 py-1 rounded d-none d-sm-block">
+            <h5 className="bg-warning px-2 py-1 rounded m-0">
               {headingText}
             </h5>
 
@@ -84,8 +90,9 @@ export default function Home() {
                 Page - {page}
               </span>
             ) : (
-              <button className="btn btn-sm btn-dark" onClick={handleBack} >
-                ← Back
+              <button className="btn btn-sm btn-dark d-flex align-items-center gap-2" onClick={handleBack}>
+                <FaArrowLeft />
+                <span>Back</span>
               </button>
             )}
 
@@ -105,17 +112,19 @@ export default function Home() {
             <div className="d-flex justify-content-center gap-3 mt-4">
 
               <button
-                className="btn btn-outline-warning"
+                className="btn btn-outline-warning d-flex align-items-center gap-2"
                 onClick={() => setPage(p => Math.max(p - 1, 1))} // Prevent page < 1
               >
-                ⬅ Prev
+                <FaArrowLeft />
+                <span>Prev</span>
               </button>
 
               <button
-                className="btn btn-outline-warning"
+                className="btn btn-outline-warning d-flex align-items-center gap-2"
                 onClick={() => setPage(p => p + 1)}
               >
-                Next ➡
+                <span>Next</span>
+                <FaArrowRight />
               </button>
 
             </div>

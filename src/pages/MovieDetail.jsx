@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { movieDetailApiURL } from "../services/api";
-import { FaImage } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaCalendarAlt,
+  FaChartLine,
+  FaClock,
+  FaFilm,
+  FaImage,
+  FaLanguage,
+  FaStar,
+  FaVoteYea,
+} from "react-icons/fa";
+import { movieDetailApiURL, movieVideosApiURL } from "../services/api";
 
 export default function MovieDetail() {
 
@@ -16,28 +26,39 @@ export default function MovieDetail() {
 
   useEffect(() => {
 
-    setLoading(true);
+    async function fetchMovieDetails() {
+      setLoading(true);
 
-    // Fetch movie details
-    fetch(movieDetailApiURL(id))
-      .then(res => res.json())
-      // data received from api stored in movie state
-      .then(data => setMovie(data));
+      try {
+        // Fetch movie details
+        // Fetch related videos (trailers, teasers, etc.)
+        const [movieRes, videosRes] = await Promise.all([
+          fetch(movieDetailApiURL(id)),
+          fetch(movieVideosApiURL(id)),
+        ]);
 
+        const movieData = await movieRes.json();
+        const videosData = await videosRes.json();
 
-    // Fetch related videos (trailers, teasers, etc.)
-    fetch(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=04c35731a5ee918f014970082a0088b1`)
-      .then(res => res.json())
-      .then(data => {
+        // data received from api stored in movie state
+        setMovie(movieData?.success === false ? null : movieData);
+
         //  official YouTube trailer and in case fallback to any YouTube video
         const video =
-          data.results?.find(v => v.type === "Trailer" && v.site === "YouTube") ||
-          data.results?.find(v => v.site === "YouTube");
+          videosData.results?.find(v => v.type === "Trailer" && v.site === "YouTube") ||
+          videosData.results?.find(v => v.site === "YouTube");
 
-        setTrailer(video);
-      })
-      .finally(() => setLoading(false)); // Ensure loading stops after API calls
+        setTrailer(video || null);
+      } catch (err) {
+        console.error("Error fetching movie details:", err);
+        setMovie(null);
+        setTrailer(null);
+      } finally {
+        setLoading(false); // Ensure loading stops after API calls
+      }
+    }
 
+    fetchMovieDetails();
   }, [id]); // Re-run when movie ID changes
 
   // Loading state UI
@@ -51,7 +72,7 @@ export default function MovieDetail() {
 
   // Fallback if movie data is unavailable
   if (!movie) {
-    return <p className="text-center mt-5">Movie not found 😢</p>;
+    return <p className="text-center mt-5">Movie not found</p>;
   }
 
   return (
@@ -61,10 +82,11 @@ export default function MovieDetail() {
 
         {/* Navigate back to previous page  */}
         <button
-          className="btn btn-outline-light mb-3"
+          className="btn btn-outline-light mb-3 d-flex align-items-center gap-2"
           onClick={() => navigate(-1)}
         >
-          ← Back
+          <FaArrowLeft />
+          <span>Back</span>
         </button>
 
         {/* Responsive layout: poster (left) + details (right) */}
@@ -88,7 +110,7 @@ export default function MovieDetail() {
                   backgroundColor: "#2c2c2c"
                 }}
               >
-                  <p className="fs-3">Image Not Found</p>
+                <p className="fs-3">Image Not Found</p>
                 <FaImage size={80} color="#999" />
               </div>
             )}
@@ -101,10 +123,20 @@ export default function MovieDetail() {
             <h1 className="fw-bold">{movie.title}</h1>
 
             {/* Rating */}
-            <p className="text-warning">⭐ {movie.vote_average} / 10</p>
+            <p className="text-warning d-flex align-items-center gap-2">
+              <FaStar />
+              <span>{movie.vote_average} / 10</span>
+            </p>
 
-            <p>
-              📅 {movie.release_date} | 🎬 {movie.original_language?.toUpperCase()}
+            <p className="d-flex flex-wrap align-items-center gap-3">
+              <span className="d-inline-flex align-items-center gap-2">
+                <FaCalendarAlt />
+                {movie.release_date || "N/A"}
+              </span>
+              <span className="d-inline-flex align-items-center gap-2">
+                <FaLanguage />
+                {movie.original_language?.toUpperCase() || "N/A"}
+              </span>
             </p>
 
             {/* Genre tags */}
@@ -117,24 +149,30 @@ export default function MovieDetail() {
             </div>
 
             {/* Movie description */}
-            <p className="flex-grow-1">{movie.overview}</p>
+            <p className="flex-grow-1">{movie.overview || "No overview available"}</p>
 
             {/* Additional stats */}
-            <div className="mb-3">
-              <span className="badge bg-secondary me-2">
+            <div className="mb-3 d-flex flex-wrap gap-2">
+              <span className="badge bg-secondary d-inline-flex align-items-center gap-2">
+                <FaVoteYea />
                 Votes: {movie.vote_count}
               </span>
 
-              <span className="badge bg-info text-dark me-2">
-                Runtime: {movie.runtime} min
+              <span className="badge bg-info text-dark d-inline-flex align-items-center gap-2">
+                <FaClock />
+                Runtime: {movie.runtime || "N/A"} min
               </span>
 
-              <span className="badge bg-secondary">
+              <span className="badge bg-secondary d-inline-flex align-items-center gap-2">
+                <FaChartLine />
                 Popularity: {movie.popularity}
               </span>
             </div>
 
-            <h4 className="pb-2">🎬 Trailer</h4>
+            <h4 className="pb-2 d-flex align-items-center gap-2">
+              <FaFilm />
+              <span>Trailer</span>
+            </h4>
 
             {/* Embed YouTube trailer if available */}
             {trailer ? (
